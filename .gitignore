@@ -1,0 +1,25 @@
+# Ignore Python cache and temp files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore virtual environment folder
+venv/
+
+# Ignore audio recordings
+*.wav
+*.mp3
+*.flac
+
+# Ignore auto-downloaded model folders
+pretrained_models/
+
+# Ignore temporary files
+*.tmp
+*.log
+*.bak
+*.temp
+
+# Ignore environment or config files
+.env
