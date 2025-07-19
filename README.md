@@ -1,86 +1,143 @@
-# Telugu Voice Assistant Bot
+# Telugu Voice Assistant Bot (Offline, AI-Powered)
 
-This project is a voice-activated assistant that responds in Telugu. It performs speaker verification, transcribes voice input using OpenAI Whisper, generates responses via a local Ollama language model, and delivers responses through Google Text-to-Speech (gTTS) in Telugu.
-
----
+This is an offline AI-powered voice assistant that recognizes spoken Telugu commands, verifies the speaker, uses a local large language model (LLM) to generate intelligent responses, and speaks the reply in Telugu. It combines Whisper (speech recognition), SpeechBrain (speaker verification), Ollama (local LLM), Google Text-to-Speech, and Google Translate to deliver an interactive voice experience without sending data to the cloud.
 
 ## Features
 
-- **Speaker Verification**: Ensures responses are only triggered by the authorized user using SpeechBrain ECAPA-VOX model.
-- **Speech Recognition**: Uses OpenAI Whisper for transcription of Telugu voice input.
-- **Local LLM Integration**: Supports response generation via local Ollama models (LLaMA2 or LLaMA3).
-- **Translation to Telugu**: English responses from the model are translated to Telugu using Google Translate API.
-- **Speech Output**: Final Telugu response is synthesized and spoken using gTTS.
+- 🎤 Speech-to-text in Telugu using OpenAI's Whisper
+- 🔐 Speaker verification using SpeechBrain
+- 🧠 LLM-powered smart replies using Ollama (e.g., LLaMA2 or LLaMA3)
+- 🗣 Text-to-speech (Telugu) using Google TTS
+- 🔄 English ↔ Telugu translation using `googletrans`
+- Fully offline LLM operation (no internet required once models are downloaded)
+
+
+---
+
+## Project Structure
+
+telugu_voice_bot/
+├── telugu_voicebot.py # Main bot script
+├── requirements.txt # All Python dependencies
+├── Akshaya_voice_reference.wav # Reference voice for speaker verification
+├── pretrained_models/ # Folder where SpeechBrain model is downloaded
+├── README.md # Project documentation
+└── .gitignore # To ignore virtual environment and temp files
+
+
 
 ---
 
 ## System Requirements
 
-- Python 3.10 or later
-- 4.5 GB+ system RAM (for running `llama2:7b-chat`)
-- Ollama installed and properly configured
-- FFmpeg installed and added to system PATH
-- Reference voice `.wav` file of the user (used for authentication)
+| Component      | Minimum                |
+|----------------|------------------------|
+| OS             | Windows 10/11 or Linux/macOS |
+| Python         | 3.8 – 3.11             |
+| RAM            | 8 GB recommended       |
+| Disk Space     | ~8–10 GB (models + audio) |
+| Internet       | Required once for initial model download |
+| GPU (optional) | Improves Whisper performance |
 
 ---
 
-## Installation Instructions
+## Setup Instructions
 
-### 1. Clone the Repository
+### 1. Clone or Create Project Folder
 
-``bash
-git clone https://github.com/<your-username>/telugu_voice_bot.git
-cd telugu_voice_bot
+Make a folder called `telugu_voice_bot` and place all files inside it.
 
-2. Set Up a Virtual Environment
+### 2. Create Virtual Environment
+
+```bash
 python -m venv venv
-venv\Scripts\activate  # On Windows
+Activate it:
 
+On Windows:
+venv\Scripts\activate
 
-3. Install Python Dependencies
+On macOS/Linux:
+source venv/bin/activate
+
+3. Install Dependencies
 pip install -r requirements.txt
+Or install manually:
 
-4. Install FFmpeg
-Download from: https://www.gyan.dev/ffmpeg/builds/
+pip install torch sounddevice soundfile gtts whisper googletrans==4.0.0-rc1 speechbrain requests
 
-Extract the contents.
+4. Install and Configure FFmpeg
+Download FFmpeg from gyan.dev, extract it, and add the bin/ path to your system’s PATH variable.
 
-Add the extracted bin/ folder to the Windows PATH environment variable.
+To verify:
+ffmpeg -version
+5. Install and Run Ollama
+Download and install Ollama: https://ollama.com/download
 
-5. Install and Configure Ollama
-Install Ollama from: https://ollama.com
+Pull the model:
 
-Start the Ollama server:
 ollama run llama2:7b-chat
-Make sure it is accessible at http://localhost:11434/
+Once running, Ollama will serve your LLM at: http://localhost:11434
 
-6. Place Voice Reference File
-Record a 3–5 second clip of your own voice.
+6. Add a Reference Voice Sample
+Record a 3–4 second .wav clip of your voice and save it as:
 
-Save it in the root directory as zaki_voice_reference.wav.
+Akshaya_voice_reference.wav
+This is used to verify your identity.
 
 Running the Bot
-After all setup is complete, run the assistant:
+Once everything is set up:
+
 python telugu_voicebot.py
-Wait for the bot to say "Listening..."
+Speak in Teluguor English. The bot will:
 
-Speak a query in Telugu or English.
+Recognize your voice
 
-If voice verification passes, it will transcribe, respond, translate to Telugu, and speak it aloud.
+Verify if it matches the reference voice
 
-To exit, say "exit", "quit", or "వీడ్కోలు".
+Transcribe your sentence
+
+Ask the LLM for a response
+
+Translate the reply into Telugu
+
+Speak the reply aloud
+
+Say “exit”, “quit”, or “వీడ్కోలు” to stop the bot.
+
+Commands Summary (Terminal)
+Action	Command
+Create virtual environment	python -m venv venv
+Activate environment	venv\Scripts\activate (Windows)
+Install libraries	pip install -r requirements.txt
+Pull LLM model	ollama run llama2:7b-chat
+Start bot	python telugu_voicebot.py
+Export dependencies (optional)	pip freeze > requirements.txt
 
 File Descriptions
-telugu_voicebot.py -	Main script to run the Telugu voice assistant.
-requirements.txt- List of required Python libraries.
-README.md -	Project documentation and setup guide.
-.gitignore - Specifies files and folders to be excluded from Git version control.
-Akshaya_voice_reference.wav-A short recording of the authorized user's voice for speaker verification.
+File & Purpose
+telugu_voicebot.py- Main Python script for recording, verification, transcription, LLM query, and speech output.
+requirements.txt- Lists all Python dependencies required to run the bot.
+Akshaya_voice_reference.wav- Reference voice used for speaker identity verification.
+README.md-  documentation file.
+.gitignore- Specifies which files/folders to exclude from Git (e.g., venv/, .mp3)
 
-Notes
-This bot uses Whisper in CPU mode and defaults to FP32 precision.
+Troubleshooting
+Model hangs or slow? Use a lighter LLM (like llama2:7b) or mock Ollama response temporarily.
 
-If the system does not have enough memory to run llama2:7b-chat, consider switching to a smaller model such as llama3.
+Voice not recognized? Re-record the reference clip and ensure clear audio.
 
-Ensure network access is available for gTTS and Google Translate to function.
+Whisper too slow? Switch to a smaller model like tiny or base.en.
+
+Audio device errors? Make sure your mic is set correctly in system settings.
+
+"Ollama didn’t respond" error? Check if Ollama is running properly in another terminal.
+
+Future Improvements
+Add wake-word detection
+
+GUI version using Tkinter or PyQt
+
+Faster model switching support
+
+Telugu command-specific actions (e.g., open browser, play music)
 
